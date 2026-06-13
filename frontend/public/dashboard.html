@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - ACME ERP</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .hidden { display: none !important; }
+        .user-info ul { list-style: none; }
+        .user-info li { padding: 0.5rem 0; border-bottom: 1px solid #e2e8f0; }
+        .user-info li:last-child { border-bottom: none; }
+        .info-section { margin-top: 2rem; padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <div class="logo">ACME ERP</div>
+            <div class="nav-links">
+                <span id="userName">Usuario</span>
+                <a href="/settings.html" class="btn-secondary btn-small" title="Ir a Configuraciones">⚙️ Configuraciones</a>
+                <button class="btn-logout">Cerrar Sesión</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard">
+        <div class="container">
+            <div class="welcome-section">
+                <h1 id="welcomeMsg">Bienvenido a ACME ERP</h1>
+                <p>Sistema de gestión seguro para ferreterías y distribuidora de energía</p>
+            </div>
+
+            <div class="modules-grid">
+                <div class="module-card">
+                    <h3>📦 Inventario</h3>
+                    <p>Gestión de stock y productos</p>
+                    <button class="btn-secondary" onclick="alert('Módulo en construcción')">Acceder</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>🛒 Ventas</h3>
+                    <p>Registro de transacciones</p>
+                    <button class="btn-secondary" onclick="alert('Módulo en construcción')">Acceder</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>📄 Facturación</h3>
+                    <p>Generación de facturas y boletas</p>
+                    <button class="btn-secondary" onclick="alert('Módulo en construcción')">Acceder</button>
+                </div>
+
+                <div class="module-card">
+                    <h3>📊 Reportes</h3>
+                    <p>Análisis y estadísticas del negocio</p>
+                    <button class="btn-secondary" onclick="alert('Módulo en construcción')">Acceder</button>
+                </div>
+            </div>
+
+            <div class="info-section">
+                <h2>Información de tu Cuenta</h2>
+                <div id="userInfo" class="user-info">
+                    <p>Cargando información...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="messageBox" class="alert hidden"></div>
+
+    <script src="/js/dashboard.js"></script>
+            </div>
+
+            <div class="info-section">
+                <h2>Información de tu Cuenta</h2>
+                <div id="userInfo" class="user-info">
+                    <p>Cargando información...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="messageBox" class="alert hidden"></div>
+
+    <script>
+        // Verificar autenticación
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '/login';
+        }
+
+        // Cargar datos del usuario
+        async function loadUserData() {
+            try {
+                const response = await fetch('/api/auth/profile', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (response.ok) {
+                    const user = await response.json();
+                    document.getElementById('userName').textContent = user.username;
+                    document.getElementById('welcomeMsg').textContent = `¡Bienvenido, ${user.first_name || user.username}!`;
+                    
+                    document.getElementById('userInfo').innerHTML = `
+                        <ul>
+                            <li><strong>Usuario:</strong> ${user.username}</li>
+                            <li><strong>Email:</strong> ${user.email}</li>
+                            <li><strong>Nombre Completo:</strong> ${user.first_name} ${user.last_name}</li>
+                            <li><strong>MFA Habilitado:</strong> ${user.mfa_enabled ? 'Sí' : 'No'}</li>
+                            <li><strong>Rol:</strong> Administrador</li>
+                        </ul>
+                    `;
+                } else if (response.status === 401) {
+                    window.location.href = '/login';
+                }
+            } catch (error) {
+                console.error('Error cargando datos:', error);
+            }
+        }
+
+        // Cerrar sesión
+        function logout() {
+            if (confirm('¿Estás seguro que deseas cerrar sesión?')) {
+                fetch('/api/auth/logout', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' }
+                }).then(() => {
+                    localStorage.removeItem('access_token');
+                    window.location.href = '/';
+                });
+            }
+        }
+
+        // Cargar datos al iniciar
+        loadUserData();
+    </script>
+</body>
+</html>

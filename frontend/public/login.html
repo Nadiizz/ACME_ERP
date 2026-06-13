@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - ACME ERP</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .hidden { display: none !important; }
+        .alert { padding: 1rem; border-radius: 4px; margin-bottom: 1rem; }
+        .alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .alert-info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+        .spinner {
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #1e40af;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-box">
+            <h1>ACME ERP</h1>
+            <p class="subtitle">Portal de Acceso Seguro</p>
+
+            <!-- Formulario de Login -->
+            <form id="loginForm" class="form-login">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <input type="text" id="username" name="username" required autocomplete="username">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" name="password" required autocomplete="current-password">
+                </div>
+
+                <button type="submit" class="btn-primary" id="loginBtn">Iniciar Sesión</button>
+                
+                <p class="form-footer">
+                    ¿Olvidaste tu contraseña? <a href="/reset">Recuperar aquí</a>
+                </p>
+            </form>
+
+            <!-- Formulario de MFA -->
+            <form id="mfaForm" class="form-mfa hidden">
+                <div class="alert alert-info">
+                    Se ha enviado un código de verificación a tu email
+                </div>
+
+                <div class="form-group">
+                    <label for="mfaToken">Código de Verificación (6 dígitos)</label>
+                    <input type="text" id="mfaToken" name="mfaToken" maxlength="6" placeholder="000000" required autocomplete="one-time-code">
+                </div>
+
+                <button type="submit" class="btn-primary" id="mfaBtn">Verificar</button>
+
+                <p class="form-footer">
+                    <a href="#" onclick="backToLogin(); return false;">Volver al login</a>
+                </p>
+            </form>
+
+            <!-- Loading State -->
+            <div id="loadingState" class="loading-state hidden">
+                <div class="spinner"></div>
+                <p>Procesando...</p>
+            </div>
+
+            <!-- Messages -->
+            <div id="messageBox" class="alert hidden"></div>
+        </div>
+    </div>
+
+    <script src="/js/auth.js"></script>
+</body>
+</html>
